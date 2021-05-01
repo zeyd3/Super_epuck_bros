@@ -27,21 +27,21 @@ static float micBack_output[FFT_SIZE];
 
 #define MIN_VALUE_THRESHOLD	10000 
 
-#define MIN_FREQ		10	//we don't analyze before this index to not use resources for nothing
-#define FREQ_FORWARD	16	//250Hz
-#define FREQ_LEFT		19	//296Hz
-#define FREQ_RIGHT		23	//359HZ
-#define FREQ_BACKWARD	26	//406Hz
-#define MAX_FREQ		30	//we don't analyze after this index to not use resources for nothing
+#define MIN_FREQ			20	//we don't analyze before this index to not use resources for nothing
+#define FREQ_FORWARD		28	// la 440hz
+#define FREQ_JUMP_FORWARD   31	// si 493Hz
+#define FREQ_JUMP_BACKWARD	50  // sol 783Hz
+#define FREQ_BACKWARD		42	// mi 659Hz
+#define MAX_FREQ			60	//we don't analyze after this index to not use resources for nothing
 
-#define FREQ_FORWARD_L		(FREQ_FORWARD-1)
-#define FREQ_FORWARD_H		(FREQ_FORWARD+1)
-#define FREQ_LEFT_L			(FREQ_LEFT-1)
-#define FREQ_LEFT_H			(FREQ_LEFT+1)
-#define FREQ_RIGHT_L		(FREQ_RIGHT-1)
-#define FREQ_RIGHT_H		(FREQ_RIGHT+1)
-#define FREQ_BACKWARD_L		(FREQ_BACKWARD-1)
-#define FREQ_BACKWARD_H		(FREQ_BACKWARD+1)
+#define FREQ_FORWARD_L			(FREQ_FORWARD-1)
+#define FREQ_FORWARD_H			(FREQ_FORWARD+1)
+#define FREQ_JUMP_FORWARD_L		(FREQ_JUMP_FORWARD-1)
+#define FREQ_JUMP_FORWARD_H		(FREQ_JUMP_FORWARD+2)
+#define FREQ_JUMP_BACKWARD_L	(FREQ_JUMP_BACKWARD-1)
+#define FREQ_JUMP_BACKWARD_H	(FREQ_JUMP_BACKWARD+2)
+#define FREQ_BACKWARD_L			(FREQ_BACKWARD-1)
+#define FREQ_BACKWARD_H			(FREQ_BACKWARD+1)
 
 /*
 *	Simple function used to detect the highest value in a buffer
@@ -59,18 +59,21 @@ void sound_remote(float* data){
 		}
 	}
 
+
 	//go forward
 	if(max_norm_index >= FREQ_FORWARD_L && max_norm_index <= FREQ_FORWARD_H){
 		left_motor_set_speed(600);
 		right_motor_set_speed(600);
 	}
-	//turn left
-	else if(max_norm_index >= FREQ_LEFT_L && max_norm_index <= FREQ_LEFT_H){
+	
+	//jump forward
+	else if(max_norm_index >= FREQ_JUMP_FORWARD_L && max_norm_index <= FREQ_JUMP_FORWARD_H){
 		left_motor_set_speed(-600);
 		right_motor_set_speed(600);
 	}
-	//turn right
-	else if(max_norm_index >= FREQ_RIGHT_L && max_norm_index <= FREQ_RIGHT_H){
+
+	//jump backward
+	else if(max_norm_index >= FREQ_JUMP_BACKWARD_L && max_norm_index <= FREQ_JUMP_BACKWARD_H){
 		left_motor_set_speed(600);
 		right_motor_set_speed(-600);
 	}
